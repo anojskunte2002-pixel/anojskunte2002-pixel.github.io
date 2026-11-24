@@ -1,0 +1,1 @@
+import{z as e}from"./primitives-Dm7HniUc.js";var t={name:`arrow-down-right`,size:24,node:[[`path`,{d:`m7 7 10 10`,key:`1fmybs`}],[`path`,{d:`M17 7v10H7`,key:`6fjiku`}]]};t.node;var n=e(t),r={name:`minus`,size:24,node:[[`path`,{d:`M5 12h14`,key:`1ays0h`}]]};r.node;var i=e(r);export{n,i as t};

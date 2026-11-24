@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Arka Access Map</title>
+<style>
+/* One reading column: open a role's view, then the tabs each role gets, then what each role can do. */
+:root{
+  --bg:#F6F8FC; --panel:#FFFFFF; --ink:#0F1B3D; --body:#48536E; --mute:#66708C;
+  --rule:#E2E7EF; --rule2:#C9D2E1; --accent:#1B4FD1; --accent-soft:#E8EEFC;
+  --good:#0E7C5A; --good-soft:#E3F3EC; --bad:#C42A47; --bad-soft:#FBE7EB; --warn:#9A6206; --warn-soft:#FBF0DC;
+  --serif:ui-serif,Georgia,"Times New Roman",serif; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1122; --panel:#141D35; --ink:#E8EDF8; --body:#B4BED4; --mute:#8D98B3; --rule:#24304F; --rule2:#33416A;
+  --accent:#6BA5F5; --accent-soft:#1A2A4D; --good:#3FCF9A; --good-soft:#123A30; --bad:#FF7A93; --bad-soft:#3D1824;
+  --warn:#E8B057; --warn-soft:#3A2D12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1122; --panel:#141D35; --ink:#E8EDF8; --body:#B4BED4; --mute:#8D98B3; --rule:#24304F; --rule2:#33416A;
+  --accent:#6BA5F5; --accent-soft:#1A2A4D; --good:#3FCF9A; --good-soft:#123A30; --bad:#FF7A93; --bad-soft:#3D1824;
+  --warn:#E8B057; --warn-soft:#3A2D12; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--body);font:15px/1.55 var(--sans);margin:0}
+a{color:var(--accent)}
+.wrap{max-width:1120px;margin:0 auto;padding:28px 16px 64px;display:grid;gap:44px}
+h1,h2,h3{font-family:var(--serif);color:var(--ink);text-wrap:balance;margin:0}
+h1{font-size:34px;line-height:1.15}
+h2{font-size:23px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+h3{font-size:17px}
+.kicker{font:600 11px/1 var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--mute)}
+.lede{max-width:72ch;margin:8px 0 0}
+section{display:grid;gap:16px;min-width:0}
+.note{font-size:13px;color:var(--mute);max-width:78ch;margin:0}
+.chip{display:inline-flex;align-items:center;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.yes{background:var(--good-soft);color:var(--good)} .lim{background:var(--warn-soft);color:var(--warn)} .no{background:var(--bad-soft);color:var(--bad)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;align-items:center}
+.demo-note{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);border:1px solid var(--rule2);padding:12px 14px;font-size:14px}
+.demo-note b{color:var(--ink)}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:12px}
+.role{background:var(--panel);border:1px solid var(--rule2);border-top:3px solid var(--accent);padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
+.role.fit{border-top-color:var(--good)} .role.both{border-top-color:var(--ink)}
+.role h3{font-size:16px}
+.role .who{font-size:12.5px;color:var(--mute);margin:0}
+.role p{margin:0;font-size:13.5px}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent);color:var(--accent);background:var(--panel);padding:5px 10px;font-size:13px;font-weight:600;text-decoration:none;border-radius:6px}
+.btn:hover{background:var(--accent);color:var(--panel)}
+.btn::after{content:"↗";font-weight:400}
+.scroll{overflow-x:auto;border:1px solid var(--rule2);background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:13px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+thead th{font:600 11px/1.3 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--mute);background:var(--bg);position:sticky;top:0}
+thead th span{display:block;text-transform:none;letter-spacing:0;font-weight:400;font-size:11.5px}
+tbody th{color:var(--ink);font-weight:600;width:22%}
+tbody th small{display:block;font-weight:400;color:var(--mute);font-size:12px;margin-top:2px}
+tr.grp td{background:var(--bg);font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);padding-top:12px}
+td small{display:block;color:var(--mute);font-size:12px;margin-top:3px}
+td a{font-size:12px;font-weight:600;white-space:nowrap}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:10px}
+.rule{background:var(--panel);border:1px solid var(--rule2);padding:12px;display:grid;gap:4px;align-content:start}
+.rule b{color:var(--ink)} .rule p{margin:0;font-size:13.5px}
+footer{font-size:12.5px;color:var(--mute);border-top:1px solid var(--rule2);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">MEIL Renewable Energy BU · Arka</div>
+    <h1>Arka Access Map</h1>
+    <p class="lede">Who sees which tab, and what each role can do, in <b>Targets &amp; KPIs</b> (monthly targets and progress tracking) and <b>Fit to Run</b> (plant readiness: HOTO points, punch points and QC checklists). It follows the rules the server enforces today; a hidden button is never the only protection.</p>
+  </header>
+
+  <div class="demo-note" role="note">
+    <span aria-hidden="true">▶</span>
+    <div><b>Every "Open" link is the live demo:</b> the real Arka screens with sample data, exactly as that role sees them. Nothing you do there is saved. Switch role at any time from the bar at the bottom of the demo.</div>
+  </div>
+
+  <section aria-labelledby="s1">
+    <h2 id="s1">1 · Open a role's view</h2>
+    <div class="roles">
+      <article class="role both">
+        <h3>CEO / Management</h3>
+        <p class="who">Leadership and State head logins</p>
+        <p>Sees everything, changes nothing in Fit to Run. Starts on Pulse in Targets &amp; KPIs and gets a summary dashboard in Fit to Run.</p>
+        <div class="links"><a class="btn" href="/performance/pulse/?as=ceo">Targets &amp; KPIs</a><a class="btn" href="/fit-to-run/?as=ceo">Fit to Run</a></div>
+      </article>
+      <article class="role both">
+        <h3>Admin · CEO Office</h3>
+        <p class="who">Admin logins; the plan admins in the CEO Office</p>
+        <p>Runs the monthly plan (Month plan tab) and does everything in Fit to Run, including QC and O&amp;M approvals.</p>
+        <div class="links"><a class="btn" href="/performance/month-plan/?as=admin">Month plan</a><a class="btn" href="/performance/targets/?as=admin">Targets</a><a class="btn" href="/fit-to-run/?as=admin">Fit to Run</a></div>
+      </article>
+      <article class="role">
+        <h3>Head of department (HOD)</h3>
+        <p class="who">Department heads in the plan</p>
+        <p>Works on their department's targets and the ones it supports; sees Pulse for what they can see.</p>
+        <div class="links"><a class="btn" href="/performance/my-work/?as=hod">My tasks</a><a class="btn" href="/performance/pulse/?as=hod">Pulse</a></div>
+      </article>
+      <article class="role">
+        <h3>Team member</h3>
+        <p class="who">People a HOD gives targets to</p>
+        <p>Updates their own targets: status, checklist, proof, remarks. No Pulse.</p>
+        <div class="links"><a class="btn" href="/performance/my-work/?as=member">My tasks</a><a class="btn" href="/performance/targets/?as=member">Targets</a></div>
+      </article>
+      <article class="role fit">
+        <h3>District in-charge · field team</h3>
+        <p class="who">District in-charge, cluster in-charge, CM and PM engineers</p>
+        <p>Fill HOTO points and QC checklists for their own plants, raise punch points and mark them fixed with an after photo.</p>
+        <div class="links"><a class="btn" href="/fit-to-run/?as=district">Fit to Run</a></div>
+      </article>
+      <article class="role fit">
+        <h3>QC inspector</h3>
+        <p class="who">Given per region by an owner</p>
+        <p>Reviews submitted checklists in their region: approve or return with a remark; certifies a plant fit to run. Opens plants on the QC checklist.</p>
+        <div class="links"><a class="btn" href="/fit-to-run/qc/?as=qc">QC queue</a><a class="btn" href="/fit-to-run/?as=qc">Dashboard</a></div>
+      </article>
+      <article class="role fit">
+        <h3>O&amp;M approver</h3>
+        <p class="who">Given per region by an owner</p>
+        <p>Closes punch points the field team fixed, or sends them back; follows HOTO progress across plants.</p>
+        <div class="links"><a class="btn" href="/fit-to-run/om/?as=om">O&amp;M approvals</a><a class="btn" href="/fit-to-run/?as=om">Dashboard</a></div>
+      </article>
+    </div>
+    <p class="note">One login can hold more than one role, for example a District in-charge for plants who is also a HOD in the plan; they get both sets of tabs. Regional in-charges and Viewers have no demo of their own: they see the field team's screens for their plants, Regional in-charges with HOTO editing only and Viewers read-only.</p>
+  </section>
+
+  <section aria-labelledby="s2">
+    <h2 id="s2">2 · Targets &amp; KPIs: tabs and side panel by role</h2>
+    <div class="legend"><span class="chip yes">Yes</span><span class="chip lim">Limited</span><span class="chip no">No</span></div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Where</th><th>CEO<span>Leadership, State head</span></th><th>CEO Office<span>plan admin</span></th><th>HOD</th><th>Team member</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="5">Side menu</td></tr>
+          <tr><th>Targets &amp; KPIs<small>someone not in the plan sees a clear "not part of the plan yet" message</small></th><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td></tr>
+          <tr class="grp"><td colspan="5">Tabs</td></tr>
+          <tr><th>My tasks<small>the targets you own or were given</small></th><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span> <a href="/performance/my-work/?as=admin">Open</a></td><td><span class="chip yes">Yes</span> <a href="/performance/my-work/?as=hod">Open</a></td><td><span class="chip yes">Yes</span> <a href="/performance/my-work/?as=member">Open</a></td></tr>
+          <tr><th>Targets<small>the month's targets, by department</small></th><td><span class="chip yes">All departments</span> <a href="/performance/targets/?as=ceo">Open</a></td><td><span class="chip yes">All departments</span> <a href="/performance/targets/?as=admin">Open</a></td><td><span class="chip lim">Limited</span><small>own department, ones it supports, ones they own</small><a href="/performance/targets/?as=hod">Open</a></td><td><span class="chip lim">Limited</span><small>same as HOD</small><a href="/performance/targets/?as=member">Open</a></td></tr>
+          <tr><th>Pulse<small>departments and people at a glance, Excel export</small></th><td><span class="chip yes">All</span> <a href="/performance/pulse/?as=ceo">Open</a></td><td><span class="chip yes">All</span> <a href="/performance/pulse/?as=admin">Open</a></td><td><span class="chip lim">What they see</span><small>people: own department and owners of what they see</small><a href="/performance/pulse/?as=hod">Open</a></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>Month plan<small>create, open and close months; plan people</small></th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span> <a href="/performance/month-plan/?as=admin">Open</a></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>A draft month<small>prepared before HODs are told</small></th><td><span class="chip yes">Sees it</span></td><td><span class="chip yes">Sees it</span></td><td><span class="chip no">Hidden</span></td><td><span class="chip no">Hidden</span></td></tr>
+          <tr class="grp"><td colspan="5">Side panel (click a target)</td></tr>
+          <tr><th>Details, expected output, target vs achieved, checklist, proof, remarks, history</th><td><span class="chip yes">Any target</span></td><td><span class="chip yes">Any target</span></td><td><span class="chip lim">Targets they can see</span></td><td><span class="chip lim">Targets they can see</span></td></tr>
+          <tr><th>Edit, status, proof, checklist</th><td><span class="chip yes">Any</span><small>not in a closed month</small></td><td><span class="chip yes">Any, even closed</span></td><td><span class="chip lim">Own department + their own</span><small>not closed</small></td><td><span class="chip lim">Their own</span><small>not closed</small></td></tr>
+          <tr><th>Quality and ownership ratings</th><td><span class="chip yes">Sees all, sets them</span></td><td><span class="chip yes">Sees all, sets them</span></td><td><span class="chip lim">Sees their own</span></td><td><span class="chip lim">Sees their own</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="s3">
+    <h2 id="s3">3 · Targets &amp; KPIs: what each role can do</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Action</th><th>CEO</th><th>CEO Office</th><th>HOD</th><th>Team member</th></tr></thead>
+        <tbody>
+          <tr><th>Add a target</th><td><span class="chip yes">Any department</span><small>not in a closed month</small></td><td><span class="chip yes">Any department, any month</span></td><td><span class="chip lim">Own department</span><small>open month only</small></td><td><span class="chip lim">Own department</span><small>open month only</small></td></tr>
+          <tr><th>Move a due date</th><td colspan="4"><span class="chip lim">Whoever may edit the target</span><small>Moving it later needs a reason; every move is kept and counted.</small></td></tr>
+          <tr><th>Move a target to another department or month</th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>Delete a target</th><td colspan="4"><span class="chip lim">Only in a draft month</span><small>In an open or closed month nobody deletes; the CEO Office moves or reworks it, so history stays complete.</small></td></tr>
+          <tr><th>Add a remark</th><td><span class="chip yes">On what they see</span><small>not closed</small></td><td><span class="chip yes">On what they see, even closed</span></td><td><span class="chip yes">On what they see</span><small>not closed</small></td><td><span class="chip yes">On what they see</span><small>not closed</small></td></tr>
+          <tr><th>Correct or withdraw a remark</th><td colspan="4"><span class="chip lim">Own remark, within 15 minutes</span><small>After that it is history and nobody changes it.</small></td></tr>
+          <tr><th>Create, open, close or copy a month</th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>Manage plan people</th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="s4">
+    <h2 id="s4">4 · Fit to Run: tabs, pages and side panel by role</h2>
+    <div class="legend"><span class="chip yes">Yes</span><span class="chip lim">Limited</span><span class="chip no">No</span></div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Where</th><th>CEO / Management</th><th>Admin</th><th>District in-charge · field team</th><th>QC inspector</th><th>O&amp;M approver</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="6">Side menu and plants</td></tr>
+          <tr><th>Fit to Run</th><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td></tr>
+          <tr><th>Plants they see</th><td><span class="chip yes">All</span></td><td><span class="chip yes">All</span></td><td><span class="chip lim">Their plants</span></td><td><span class="chip lim">Their regions</span></td><td><span class="chip lim">Their regions</span></td></tr>
+          <tr class="grp"><td colspan="6">Tabs</td></tr>
+          <tr><th>Overview<small>the dashboard, then the plants table; every card filters the table</small></th>
+            <td><span class="chip yes">Readiness by stage</span><small>headline readiness, stage cards, past target date</small><a href="/fit-to-run/?as=ceo">Open</a></td>
+            <td><span class="chip yes">Readiness by stage</span><a href="/fit-to-run/?as=admin">Open</a></td>
+            <td><span class="chip yes">Readiness by stage</span><small>their plants</small><a href="/fit-to-run/?as=district">Open</a></td>
+            <td><span class="chip yes">QC work</span><small>awaiting QC, returned, due in 7 days, past target date, ready for final QC</small><a href="/fit-to-run/?as=qc">Open</a></td>
+            <td><span class="chip yes">HOTO progress</span><small>HOTO done, punch points open, awaiting O&amp;M, past target date; each HOTO point across plants</small><a href="/fit-to-run/?as=om">Open</a></td></tr>
+          <tr><th>QC queue<small>checklists submitted for review</small></th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span> <a href="/fit-to-run/qc/?as=admin">Open</a></td><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span> <a href="/fit-to-run/qc/?as=qc">Open</a></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>O&amp;M approvals<small>punch points marked fixed, oldest first</small></th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span> <a href="/fit-to-run/om/?as=admin">Open</a></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span> <a href="/fit-to-run/om/?as=om">Open</a></td></tr>
+          <tr><th>Inspectors &amp; approvers<small>who reviews and approves which region</small></th><td colspan="5"><span class="chip lim">Platform owners only</span></td></tr>
+          <tr class="grp"><td colspan="6">A plant's page</td></tr>
+          <tr><th>What opens</th><td><span class="chip lim">Read-only summary</span><small>no checklist tabs; punch points under each HOTO point</small></td><td><span class="chip yes">O&amp;M checklist, QC checklist</span></td><td><span class="chip yes">O&amp;M checklist, QC checklist</span></td><td><span class="chip yes">QC checklist first</span><small>O&amp;M checklist one tab away</small></td><td><span class="chip yes">O&amp;M checklist, QC checklist</span></td></tr>
+          <tr><th>O&amp;M checklist tab<small>HOTO points with status, remark and target date; punch points under each</small></th><td><span class="chip no">No</span></td><td><span class="chip yes">Edit</span></td><td><span class="chip yes">Edit their plants</span></td><td><span class="chip yes">Edit their regions</span></td><td><span class="chip yes">Edit their regions</span></td></tr>
+          <tr><th>QC checklist tab<small>the plant's applicable checklists by section, with target dates</small></th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip lim">View</span></td></tr>
+          <tr class="grp"><td colspan="6">Side panel (click a checklist)</td></tr>
+          <tr><th>Fill in, attach files, submit</th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Their plants</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>Approve or return with a remark</th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip no">No</span></td><td><span class="chip yes">Their regions</span><small>never their own submission</small></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>Set the checklist's target date</th><td><span class="chip no">No</span></td><td><span class="chip yes">Yes</span></td><td><span class="chip yes">Their plants</span></td><td><span class="chip yes">Their regions</span></td><td><span class="chip yes">Their regions</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="s5">
+    <h2 id="s5">5 · Fit to Run: what each role can do</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Action</th><th>CEO / Management</th><th>Admin</th><th>District in-charge · field team</th><th>Regional in-charge</th><th>QC inspector</th><th>O&amp;M approver</th></tr></thead>
+        <tbody>
+          <tr><th>Update HOTO points, raise a punch point</th><td><span class="chip no">No</span></td><td><span class="chip yes">All</span></td><td><span class="chip yes">Their plants</span></td><td><span class="chip yes">Their plants</span></td><td><span class="chip yes">Their regions</span></td><td><span class="chip yes">Their regions</span></td></tr>
+          <tr><th>Mark a punch point fixed<small>needs an after photo</small></th><td><span class="chip no">No</span></td><td><span class="chip yes">All</span></td><td><span class="chip yes">Their plants</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>Close a fixed punch point, or send it back</th><td><span class="chip no">No</span></td><td><span class="chip yes">All</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td><td><span class="chip yes">Their regions</span><small>never one they fixed</small></td></tr>
+          <tr><th>Fill and submit QC checklists</th><td><span class="chip no">No</span></td><td><span class="chip yes">All</span></td><td><span class="chip yes">Their plants</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>Approve or return checklists; certify a plant fit to run<small>certify needs every HOTO point done</small></th><td><span class="chip no">No</span></td><td><span class="chip yes">All</span></td><td><span class="chip no">No</span></td><td><span class="chip no">No</span></td><td><span class="chip yes">Their regions</span></td><td><span class="chip no">No</span></td></tr>
+          <tr><th>Set the plant type<small>decides which QC checklists apply</small></th><td colspan="6"><span class="chip lim">Admin only</span></td></tr>
+          <tr><th>Move a punch point to another HOTO point</th><td colspan="6"><span class="chip lim">Admin only</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Viewers see their plants and change nothing. QC inspectors and O&amp;M approvers are given per region by a platform owner (Fit to Run → Inspectors &amp; approvers).</p>
+  </section>
+
+  <section aria-labelledby="s6">
+    <h2 id="s6">6 · Special rules</h2>
+    <div class="rules">
+      <div class="rule"><b>View as</b><p>A platform owner can see Arka exactly as any person sees it, with a banner on top. Nothing can be changed while viewing, and every use is logged.</p></div>
+      <div class="rule"><b>Test logins</b><p>Live in a hidden Test department; never appear in Pulse, scorecards or exports; deleted in one click.</p></div>
+      <div class="rule"><b>Not in the plan yet</b><p>A login with no plan role gets a clear message in Targets &amp; KPIs instead of an empty list.</p></div>
+      <div class="rule"><b>Emails</b><p>Sent only for open months, never while viewing as someone, never for test targets.</p></div>
+    </div>
+  </section>
+
+  <footer>About the demo: the screens are Arka's own, with sample progress on Fit to Run and sample targets in Targets &amp; KPIs, recorded on 24 Nov 2026. Plant and people names are real; emails and phone numbers are hidden. Downloads and saving are switched off.</footer>
+</div>
+</body>
+</html>

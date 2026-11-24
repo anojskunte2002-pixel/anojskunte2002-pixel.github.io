@@ -1,0 +1,14 @@
+{
+  "id": "/ticketing",
+  "name": "Arka Tickets",
+  "short_name": "Tickets",
+  "description": "Arka tickets for the field team, readable with no signal",
+  "start_url": "/ticketing",
+  "scope": "/ticketing",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
